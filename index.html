@@ -9,6 +9,13 @@
 <meta property="og:description" content="Sneaker drops you can get without a Nike/SNKRS account. Free alerts on Telegram.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nosnkrsneeded.com/">
+<meta name="theme-color" content="#0d0d10">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="No SNKRS">
 <style>
   :root{
     --bg:#0d0d10; --card:#17171c; --line:#26262e; --text:#f2f2f4; --muted:#a7a7b3;
@@ -47,6 +54,8 @@
     <h1>Drops you can cop<br><span>without SNKRS.</span></h1>
     <p class="tag">Every drop below is sold at regular retailers — no Nike account, no SNKRS app, no raffle luck required.</p>
     <a class="cta" href="https://t.me/NoSNKRSNeeded">Get Free Drop Alerts on Telegram<small>Join the channel — alerts before every drop</small></a>
+    <button id="installBtn" class="cta" style="display:none;background:var(--accent);border:none;width:100%;cursor:pointer;font-family:inherit">📲 Get the App — Free<small>Installs on your home screen. No app store, no Nike account.</small></button>
+    <div id="installHelp" class="how" style="display:none"></div>
   </header>
 
   <div class="how"><b>How it works:</b> when a shoe drops, we list exactly which stores carry it — <b>Foot Locker, Finish Line, JD Sports, Hibbett, Shiekh, and DICK'S</b> — so you can buy at retail without ever touching SNKRS.</div>
@@ -54,14 +63,14 @@
   <h2>Upcoming drops</h2>
 
   <div class="drop">
-    <div class="when">Wed Nov 11 · 9:00 AM CT <span class="badge">Tomorrow</span></div>
+    <div class="when">Wed Nov 11 · 9:00 AM CT <span class="badge">Today</span></div>
     <h3>Air Jordan 11 &lsquo;Magic Ball&rsquo; (Women&rsquo;s)</h3>
     <p class="meta"><span class="price">$235</span> · Women&rsquo;s exclusive, extended sizing · Style IZ1800-200</p>
     <p class="stores"><b>Where:</b> Foot Locker · Hibbett · Champs</p>
   </div>
 
   <div class="drop">
-    <div class="when">Wed Nov 11 · 9:00 AM CT <span class="badge">Tomorrow</span></div>
+    <div class="when">Wed Nov 11 · 9:00 AM CT <span class="badge">Today</span></div>
     <h3>Nike Kobe 8 Protro &lsquo;Shanghai Fireworks&rsquo;</h3>
     <p class="meta"><span class="price">$200</span> · $125 grade school</p>
     <p class="stores"><b>Where:</b> Foot Locker · DICK&rsquo;S · Hibbett · Shiekh</p>
@@ -95,5 +104,39 @@
     <p style="margin-top:8px">No SNKRS Needed · <a href="https://t.me/NoSNKRSNeeded">Telegram alerts</a> · nosnkrsneeded.com</p>
   </footer>
 </div>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+  (function () {
+    var btn = document.getElementById('installBtn');
+    var help = document.getElementById('installHelp');
+    var deferred = null;
+    var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (standalone || !btn) return;
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferred = e;
+      btn.style.display = 'block';
+    });
+    if (isIOS) btn.style.display = 'block';
+    btn.addEventListener('click', function () {
+      if (deferred) {
+        deferred.prompt();
+        deferred.userChoice.then(function () { deferred = null; });
+        return;
+      }
+      help.style.display = 'block';
+      help.innerHTML = isIOS
+        ? '<b>On iPhone:</b> tap the <b>Share</b> button (square with an arrow) at the bottom of Safari, then tap <b>Add to Home Screen</b>. The No SNKRS app lands on your home screen like any other app.'
+        : '<b>To install:</b> open your browser menu (⋮) and tap <b>Install app</b> or <b>Add to Home Screen</b>. The No SNKRS app lands on your home screen like any other app.';
+    });
+    window.addEventListener('appinstalled', function () {
+      btn.style.display = 'none';
+      help.style.display = 'none';
+    });
+  })();
+</script>
 </body>
 </html>
