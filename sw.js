@@ -1,6 +1,9 @@
-const CACHE = 'nsn-v1';
+const CACHE = 'nsn-v2';
 const CORE = ['./', './index.html', './manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png',
+  './images/aj11-magic-ball.jpg', './images/kobe8-shanghai.jpg',
+  './images/air-bakin-varsity-royal.jpg', './images/aj11-green-screen.jpg',
+  './images/aj4-bred.jpg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
