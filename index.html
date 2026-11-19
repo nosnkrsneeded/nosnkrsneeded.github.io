@@ -66,8 +66,12 @@
     <div style="margin-top:14px;border:1px solid #333;border-radius:12px;padding:16px;text-align:left">
       <b style="font-size:17px">📬 Get alerts by email or text</b>
       <p style="margin:6px 0 12px;color:var(--muted);font-size:14px">A weekly roundup every Monday + a heads-up before big drops. Free — no spam, ever.</p>
-      <form id="alertForm" style="display:flex;gap:8px;flex-wrap:wrap">
-        <input id="alertContact" type="text" inputmode="email" placeholder="Email or phone number" required style="flex:1;min-width:200px;padding:12px;border-radius:8px;border:1px solid #444;background:#111;color:#fff;font-size:15px">
+      <form id="alertForm" action="https://formsubmit.co/f616da4696c11b9c0c3a3c238f838b1e" method="POST" style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="alertContact" name="contact" type="text" inputmode="email" placeholder="Email or phone number" required style="flex:1;min-width:200px;padding:12px;border-radius:8px;border:1px solid #444;background:#111;color:#fff;font-size:15px">
+        <input type="hidden" name="_subject" value="New No SNKRS Needed alert signup">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://nosnkrsneeded.com/?signup=thanks">
         <button type="submit" style="padding:12px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer">Sign Me Up — Free</button>
       </form>
       <p id="alertMsg" style="margin:10px 0 0;font-size:14px"></p>
@@ -159,30 +163,11 @@
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }
   (function () {
+    if (location.search.indexOf('signup=thanks') === -1) return;
+    var msg = document.getElementById('alertMsg');
+    if (msg) msg.textContent = '✅ You\u2019re in! Watch for the Monday roundup and a heads-up before big drops.';
     var form = document.getElementById('alertForm');
-    if (!form) return;
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var contact = document.getElementById('alertContact').value.trim();
-      var msg = document.getElementById('alertMsg');
-      if (!contact) return;
-      msg.textContent = 'Signing you up…';
-      fetch('https://formsubmit.co/ajax/sharpejacob91@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          contact: contact,
-          _subject: 'New No SNKRS Needed alert signup',
-          _template: 'table'
-        })
-      }).then(function (r) {
-        if (!r.ok) throw new Error('bad response');
-        msg.textContent = '✅ You\u2019re in! Watch for the Monday roundup and a heads-up before big drops.';
-        form.reset();
-      }).catch(function () {
-        msg.textContent = 'That didn\u2019t go through — try the Telegram alerts above, or try again in a minute.';
-      });
-    });
+    if (form) form.scrollIntoView({ block: 'center' });
   })();
   (function () {
     var el = document.getElementById('dropCountdown');
